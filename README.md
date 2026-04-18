@@ -68,6 +68,7 @@ Deploy the application
 
 This project focuses on practicing API integration and building a dynamic Flask application.
 ```
-📄 License
+
+## 📄 License
 
 Open-source and available under the MIT License.
