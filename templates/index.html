@@ -1,0 +1,144 @@
+{# templates/index.html #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutritional Product Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                Nutritional Product Information
+            </h1>
+            <p class="text-gray-600 text-lg">
+                Discover detailed nutritional information, ingredients, and health scores for food products
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-search mr-2 text-blue-500"></i>
+                    What You Can Search
+                </h2>
+                <ul class="space-y-3 text-gray-600">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle mt-1 mr-2 text-green-500"></i>
+                        <span>Packaged food products and beverages</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle mt-1 mr-2 text-green-500"></i>
+                        <span>Snacks, cereals, and dairy products</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle mt-1 mr-2 text-green-500"></i>
+                        <span>Ready-to-eat meals and ingredients</span>
+                    </li>
+                  
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                    What You'll Get
+                </h2>
+                <ul class="space-y-3 text-gray-600">
+                    <li class="flex items-start">
+                        <i class="fas fa-chart-pie mt-1 mr-2 text-green-500"></i>
+                        <span>Detailed nutritional information and serving sizes</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-list mt-1 mr-2 text-green-500"></i>
+                        <span>Complete ingredient lists and allergen information</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-star mt-1 mr-2 text-green-500"></i>
+                        <span>Nutri-Score and health certifications</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle mt-1 mr-2 text-green-500"></i>
+                        <span>Get a report of the product and how it will affect your health</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+            <form id="searchForm" action="{{ url_for('get_data') }}" method="POST">
+                <div class="mb-6">
+                    <label for="searchInput" class="block text-gray-700 text-sm font-semibold mb-2">Search for a Product</label>
+                    <div class="relative">
+                        <input 
+                            id="searchInput"
+                            type="text"
+                            name="query"
+                            placeholder="Try 'Nutella', 'Cheerios', 'Greek Yogurt'..."
+                            class="w-full py-3 px-4 pr-12 text-gray-700 bg-gray-50 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                        />
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <button
+                        type="submit"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center"
+                    >
+                        <i class="fas fa-search mr-2"></i>
+                        Search Products
+                    </button>
+                </div>
+            </form>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="mt-4 p-4 rounded-lg {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                            <div class="flex items-center">
+                                <i class="{% if category == 'error' %}fas fa-exclamation-circle{% else %}fas fa-check-circle{% endif %} mr-2"></i>
+                                {{ message }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
+                Popular Searches
+            </h2>
+            <div class="flex flex-wrap gap-2">
+                <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 text-sm transition-colors duration-300">Oatmeal</button>
+                <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 text-sm transition-colors duration-300">Protein Bars</button>
+                <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 text-sm transition-colors duration-300">Almond Milk</button>
+                <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 text-sm transition-colors duration-300">Granola</button>
+                <button type="button" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 text-sm transition-colors duration-300">Energy Drinks</button>
+            </div>
+        </div>  
+
+        <footer class="text-center text-gray-500 text-sm">
+            <p>&copy; 2025 Nutritional Product Search. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Add click handlers for popular search buttons
+        document.querySelectorAll('.bg-gray-100').forEach(button => {
+            button.addEventListener('click', () => {
+                document.getElementById('searchInput').value = button.textContent;
+                document.getElementById('searchForm').submit();
+            });
+        });
+    </script>
+</body>
+</html>

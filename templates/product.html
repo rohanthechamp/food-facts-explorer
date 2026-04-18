@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        {% for product in product_details %}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Image Section -->
+            <div class="space-y-4">
+                <div class="relative overflow-hidden rounded-lg bg-white">
+                    <img src="{{ product['Images_url']['image_url'] }}" alt="{{ product['Product name'] }}"
+                        class="w-full h-[500px] object-cover hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="flex space-x-4 overflow-x-auto pb-4">
+                    <img src="{{ product['Images_url']['thumbnail_url'] }}"
+                        alt="{{ product['Product name'] }} thumbnail"
+                        class="w-24 h-24 rounded-lg object-cover cursor-pointer hover:opacity-75 transition-opacity">
+                </div>
+            </div>
+
+            <!-- Product Information -->
+            <div class="space-y-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">{{ product['Product name'] }}</h1>
+                    <p class="text-lg text-gray-600 mt-2">{{ product['Categories'] }}</p>
+                </div>
+
+                <!-- Scores Section -->
+                <div class="grid grid-cols-3 gap-4">
+                    {% set nutri = product['Nutri_Score']|upper %}
+                    <div class="{% if nutri in ['A', 'B'] %}bg-gradient-to-r from-green-500 to-green-400
+                         {% elif nutri in ['C'] %}bg-gradient-to-r from-yellow-500 to-yellow-400
+                         {% elif nutri in ['D', 'E'] %}bg-gradient-to-r from-red-500 to-red-400
+                         {% else %}bg-gradient-to-r from-gray-500 to-gray-400{% endif %}
+                         p-4 rounded-lg text-white text-center transform hover:scale-105 transition-transform">
+                        <div class="text-2xl font-bold">{{ nutri }}</div>
+                        <div class="text-sm">Nutri Score</div>
+                    </div>
+
+                    {% set nova = product['Nova_Group'] %}
+                    <div class="{% if nova == 1 %}bg-gradient-to-r from-green-500 to-green-400
+                         {% elif nova == 2 %}bg-gradient-to-r from-yellow-500 to-yellow-400
+                         {% elif nova == 3 %}bg-gradient-to-r from-orange-500 to-orange-400
+                         {% elif nova == 4 %}bg-gradient-to-r from-red-500 to-red-400
+                         {% else %}bg-gradient-to-r from-gray-500 to-gray-400{% endif %}
+                         p-4 rounded-lg text-white text-center transform hover:scale-105 transition-transform">
+                        <div class="text-2xl font-bold">{{ nova }}</div>
+                        <div class="text-sm">Nova Group</div>
+                    </div>
+
+                    {% set eco = product['Eco_Score']|upper %}
+                    <div class="{% if eco in ['A', 'B'] %}bg-gradient-to-r from-green-500 to-green-400
+                         {% elif eco == 'C' %}bg-gradient-to-r from-yellow-500 to-yellow-400
+                         {% elif eco in ['D', 'E'] %}bg-gradient-to-r from-red-500 to-red-400
+                         {% else %}bg-gradient-to-r from-gray-500 to-gray-400{% endif %}
+                         p-4 rounded-lg text-white text-center transform hover:scale-105 transition-transform">
+                        <div class="text-2xl font-bold">{{ eco }}</div>
+                        <div class="text-sm">Eco Score</div>
+                    </div>
+                </div>
+
+                <!-- Ingredients -->
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-xl font-semibold mb-4">Ingredients</h2>
+                    <p class="text-gray-600">{{ product['Ingredients'] }}</p>
+                </div>
+
+                <!-- Nutritional Information -->
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-xl font-semibold mb-4">Nutritional Information</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for key, value in product['Nutritional_Info'].items() %}
+                        {% if not key.endswith('_100g') and not key.endswith('_serving') and not key.endswith('_unit')
+                        and not key.endswith('_value') and not key.endswith('_value_computed') and not '-' in key %}
+                        <div class="border-b border-gray-200 py-2">
+                            <span class="text-gray-600">{{ key|title }}</span>
+                            <span class="float-right font-medium">
+                                {{ value }}{% if product['Nutritional_Info'][key + '_unit'] %}
+                                {{ product['Nutritional_Info'][key + '_unit'] }}{% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Overall Assessment -->
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-xl font-semibold mb-4">Overall Product Assessment</h2>
+                    {% if nutri in ['A','B'] and nova in [1,2] and eco in ['A','B'] %}
+                    <p class="text-green-700">
+                        This product is an excellent choice. It has outstanding nutritional quality, minimal processing,
+                        and a strong environmental performance.
+                    </p>
+                    {% elif nutri in ['D','E'] or nova == 4 or eco in ['D','E'] %}
+                    <p class="text-red-700">
+                        Based on the available data, this product may not be the healthiest option. It shows lower
+                        nutritional quality, high levels of processing, or a negative environmental impact.
+                    </p>
+                    {% else %}
+                    <p class="text-yellow-700">
+                        The product has moderate ratings overall. While it may not be the top choice, it can be
+                        acceptable in moderation. Consider its nutritional, processing, and environmental scores when
+                        making your decision.
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>
